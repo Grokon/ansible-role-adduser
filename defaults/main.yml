@@ -1,0 +1,57 @@
+---
+# @todo improvement:
+#############################
+# USERS SECTIONS
+#############################
+
+# @var adduser__create_per_user_group:description: Create a group for every user and make that their primary group
+adduser__create_per_user_group: true
+
+# @var adduser__group: description: If we're not creating a per-user group, then this is the group all users belong to
+adduser__default_group: users
+
+# @var adduser__docker_group:description: The group to add users to docker group is docker is installed and this is set to true
+adduser__docker_group: docker
+
+# @var adduser__default_shell:description: The default shell for a user if none is specified
+adduser__default_shell: /bin/bash
+
+# @var adduser__create_homedir: description: Create home dirs for new users? Set this to false if you manage home directories in some other way.
+adduser__create_homedir: true
+
+# @var adduser__remove_home:description: Delete the home directory of a user when the user is removed?
+adduser__remove_home: false
+
+# @var adduser__groups:description: List of groups to create
+# @var adduser__groups:example:>
+# adduser__groups_to_create:
+#   - name: "foo"
+#     gid: 1000
+#   - name: "bar"
+#     gid: 1001
+# @end
+adduser__groups: []
+
+# @var adduser__users:description: List of users to create
+# @var adduser__users:example:>
+# adduser__users:
+#   - name: "foo"
+#     group: ["foo", "bar"]
+#     ssh_key: ['ssh-rsa blahblahblah']
+#     shell: "/bin/bash"
+#     uid: 1000
+#     home: "/home/foo"
+#     is_system_user: true
+#     docker_group: true
+# @end
+adduser__users: []
+
+# @var adduser__authorized_keys_file:description: The file to store authorized keys in
+adduser__authorized_keys_file: ".ssh/authorized_keys"
+
+# @var adduser__user_stats_file:description: The file to store user stats in
+adduser__stats_file_path: "~/.ansible"
+
+# @var adduser__delete_unmanaged:description: Delete users and groups that are not managed by ansible
+adduser__delete_unmanaged: true
+######## END USERS SECTIONS ##################

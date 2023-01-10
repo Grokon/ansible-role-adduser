@@ -1,0 +1,72 @@
+---
+# This playbook creates or updates users and groups on a host.
+- name: Check if docker group is present
+  ansible.builtin.getent:
+    database: group
+    key: "{{ adduser__docker_group }}"
+    fail_key: False
+  register: docker_group
+
+# Create per user groups
+- name: Per-user group creation
+  become: true
+  ansible.builtin.group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid | default(item.uid) | default(omit) }}"
+  when: "'group' not in item and adduser__create_per_user_group"
+  with_items: "{{ adduser__users }}"
+
+- name: Create or modify users
+  become: true
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    group: "{{ item.group | default(item.name if adduser__create_per_user_group else adduser__default_group) }}"
+    # empty string removes user from all secondary groups
+    groups:
+      "{{ (item.groups + ([adduser__docker_group] if docker_group.msg is not defined and item.docker_group is defined and item.docker_group else [])) |
+      join(',') if 'groups' in item else '' }}"
+    append: "{{ item.append | default(omit) }}"
+    shell: "{{ item.shell | default(adduser__default_shell) }}"
+    password: "{{ item.password if item.password is defined else '!' }}"
+    comment: "{{ item.comment | default('User created by ansible') }}"
+    uid: "{{ item.uid | default(omit) }}"
+    home: "{{ item.home | default('/home/' + item.name) }}"
+    create_home: "{{ item.create_home | default(adduser__create_homedir) }}"
+    generate_ssh_key: "{{ item.generate_ssh_key | default(omit) }}"
+    ssh_key_type: "{{ item.ssh_key_type | default('ed25519') }}"
+    update_password: "{{ item.update_password | default(omit) }}"
+    system: "{{ item.is_system_user | default(omit) }}"
+  with_items: "{{ adduser__users }}"
+  register: adduser__users_register
+
+# - name: Echo user creation status
+#   ansible.builtin.debug:
+#     msg: "{{ adduser__users_register }}"
+#   no_log: "{{ not lookup('env', 'ANSIBLE_DEBUG') | bool }}"
+
+- name: Creating users stats file
+  become: false
+  ansible.builtin.copy:
+    content: "{{ item | to_nice_yaml }}"
+    dest: "{{ adduser__stats_file_path }}/user_{{ item.name }}.yaml"
+    mode: 0644
+  with_items: "{{ adduser__users }}"
+
+- name: SSH keys
+  ansible.posix.authorized_key:
+    user: "{{ item.name }}"
+    exclusive: "{{ item.ssh_key_exclusive | default(true) }}"
+    key: "{{ item.ssh_key | join ('\n') }}"
+  when: item.ssh_key is defined
+  with_items: "{{ adduser__users }}"
+
+# Edit sudoers
+- name: Edit sudoers
+  become: true
+  community.general.sudoers:
+    name: "{{ item.name }}"
+    state: present
+    user: "{{ item.name }}"
+    commands: "{{ item.sudoers }}"
+  when: item.sudoers is defined
+  with_items: "{{ adduser__users }}"

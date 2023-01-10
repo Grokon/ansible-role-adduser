@@ -1,0 +1,41 @@
+---
+# Cheek groups that need to be deleted
+- name: Find stats files without group
+  ansible.builtin.find:
+    paths: "{{ adduser__stats_file_path }}"
+    file_type: file
+    patterns:
+      - group_(?!{{ adduser__groups | map(attribute='name') | join('|') }}).*\.yaml
+    use_regex: true
+  register: __group_stats_files
+
+# This playbook deletes a group from the system.
+- name: Set facts with group list for delete
+  ansible.builtin.set_fact:
+    __group_list: "{{ __group_stats_files.files | map(attribute='path') | map('basename') | map('regex_replace', 'group_', '') | map('regex_replace', '.yaml', '') | list }}"
+  when: __group_stats_files.files | length
+
+- name: Delete group
+  become: true
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ __group_list }}"
+  when: __group_stats_files.files | length
+
+- name: Delete sudoers for group
+  become: true
+  community.general.sudoers:
+    name: "{{ item }}"
+    state: absent
+    group: "{{ item.group | default(omit) }}"
+  with_items: "{{ __group_list }}"
+  when: __group_stats_files.files | length
+
+- name: Delete group stats file
+  become: false
+  ansible.builtin.file:
+    path: "{{ adduser__stats_file_path }}/group_{{ item }}.yaml"
+    state: absent
+  with_items: "{{ __group_list }}"
+  when: __group_stats_files.files | length

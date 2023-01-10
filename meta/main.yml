@@ -1,0 +1,24 @@
+---
+galaxy_info:
+  role_name: adduser
+  author: grokon
+  description: An Ansible Role that added users and groups on Debian
+  license: MIT
+  min_ansible_version: 5.0.0
+
+  platforms:
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
+
+  galaxy_tags:
+    - user
+    - adduser
+    - debian
+
+collections:
+  - community.general
+  - ansible.posix
+
+dependencies: []

@@ -1,0 +1,54 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Example assertion
+      ansible.builtin.assert:
+        that: true
+
+    - name: Check that group foo exists
+      ansible.builtin.getent:
+        database: group
+        key: "foo"
+        fail_key: False
+      register: group_foo
+
+    - name: Check that group bar exists
+      ansible.builtin.getent:
+        database: group
+        key: "bar"
+        fail_key: False
+      register: group_bar
+
+    - name: Check that group bar exists
+      ansible.builtin.getent:
+        database: group
+        key: "test1"
+        fail_key: False
+      register: group_test1
+
+    - name: Test that user foo exists
+      ansible.builtin.getent:
+        database: passwd
+        key: "foo"
+        fail_key: False
+      register: user_foo
+
+    - name: Test that user test exists
+      ansible.builtin.getent:
+        database: passwd
+        key: "test"
+        fail_key: False
+      register: user_test
+
+    - name: Check all variables
+      ansible.builtin.assert:
+        that:
+          - group_foo.msg is not defined
+          - group_bar.msg is not defined
+          - group_test1.msg is defined
+          - user_foo.msg is not defined
+          - user_test.msg is defined

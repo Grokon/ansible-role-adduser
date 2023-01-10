@@ -1,0 +1,24 @@
+---
+- name: Converge
+  hosts: all
+
+  tasks:
+    - name: "Include grokon.adduser"
+      ansible.builtin.include_role:
+        name: "grokon.adduser"
+      vars:
+        adduser__groups:
+          - name: "doo"
+            gid: 3001
+            sudo: /usr/bin/sudo
+          - name: "bar"
+            gid: 3002
+        adduser__users:
+          - name: "foo"
+            groups: ["bar", "doo"]
+            ssh_key: ["ssh-rsa blahblahblah"]
+            shell: "/bin/bash"
+            uid: 3000
+            home: "/home/foo"
+            system: true
+            docker_enabled: true

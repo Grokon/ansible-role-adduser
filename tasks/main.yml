@@ -1,0 +1,46 @@
+---
+# tasks/main.yml
+
+# Check if Debian is used
+- name: FAIL; if not Debian
+  ansible.builtin.assert:
+    that: ansible_os_family == "Debian"
+    fail_msg: "This role only tested on Debian based systems"
+    quiet: true
+  tags: ["adduser", "users", "groups"]
+
+# This playbook is used to preflight the adduser role.
+# - name: Ensure dependencies is installed.
+#   become: true
+#   ansible.builtin.apt:
+#     name: sudo
+#     state: present
+#   tags: ["adduser", "users", "groups"]
+
+- name: Ensure that directory for stats exists - {{ adduser__stats_file_path }}
+  become: false
+  ansible.builtin.file:
+    path: "{{ adduser__stats_file_path }}"
+    state: directory
+    mode: 0700
+  tags: ["adduser", "users", "groups"]
+
+- name: Create or modify groups
+  ansible.builtin.import_tasks: groups.yml
+  when: adduser__groups | length
+  tags: ["adduser", "groups"]
+
+- name: Create or modify users
+  ansible.builtin.import_tasks: users.yml
+  when: adduser__users | length
+  tags: ["adduser", "users"]
+
+- name: Delete users
+  ansible.builtin.import_tasks: users_delete.yml
+  when: adduser__delete_unmanaged
+  tags: ["adduser", "users"]
+
+- name: Delete groups
+  ansible.builtin.import_tasks: groups_delete.yml
+  when: adduser__delete_unmanaged
+  tags: ["adduser", "groups"]

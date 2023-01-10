@@ -1,0 +1,27 @@
+---
+# Create groups
+- name: Creating groups
+  become: true
+  ansible.builtin.group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid | default(omit) }}"
+    state: present
+    system: "{{ item.system | default(omit) }}"
+  with_items: "{{ adduser__groups }}"
+
+- name: Creating groups stats file
+  become: false
+  ansible.builtin.copy:
+    content: "{{ item | to_nice_yaml }}"
+    dest: "{{ adduser__stats_file_path }}/group_{{ item.name }}.yaml"
+    mode: 0644
+  with_items: "{{ adduser__groups }}"
+
+- name: Edit sudoers for group
+  become: true
+  community.general.sudoers:
+    name: "{{ item.name }}"
+    group: "{{ item.name }}"
+    commands: "{{ item.sudo }}"
+  with_items: "{{ adduser__groups }}"
+  when: item.sudo is defined

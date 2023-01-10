@@ -1,0 +1,30 @@
+---
+- name: Prepare test environment
+  hosts: all
+
+  tasks:
+    - name: Create test group
+      ansible.builtin.group:
+        name: "test1"
+        gid: 2000
+        state: present
+      become: true
+    - name: Create test user
+      ansible.builtin.user:
+        name: "test"
+        group: "test1"
+        shell: "/bin/bash"
+        uid: 2000
+        home: "/home/foo"
+        system: true
+        state: present
+      become: true
+    - name: Create test state file
+      ansible.builtin.copy:
+        dest: "~/.ansible/{{ item }}"
+        content: "test"
+        mode: "0600"
+      loop:
+        - "user_test.yaml"
+        - "group_test1.yaml"
+      become: false
