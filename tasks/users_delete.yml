@@ -17,14 +17,6 @@
       map('regex_replace', 'user_', '') | map('regex_replace', '.yaml', '') | list }}"
   when: __user_stats_files.files | length
 
-- name: Delete per user group
-  become: true
-  ansible.builtin.group:
-    name: "{{ item }}"
-    state: absent
-  with_items: "{{ __user_list }}"
-  when: adduser__create_per_user_group and __user_stats_files.files | length
-
 - name: Delete user
   become: true
   ansible.builtin.user:
@@ -32,6 +24,14 @@
     state: absent
   with_items: "{{ __user_list }}"
   when: __user_stats_files.files | length
+
+- name: Delete per user group
+  become: true
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ __user_list }}"
+  when: adduser__create_per_user_group and __user_stats_files.files | length
 
   # Edit sudoers
 - name: Edit sudoers
