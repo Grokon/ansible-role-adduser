@@ -22,6 +22,7 @@
   ansible.builtin.user:
     name: "{{ item }}"
     state: absent
+    remove: true
   with_items: "{{ __user_list }}"
   when: __user_stats_files.files | length
 
