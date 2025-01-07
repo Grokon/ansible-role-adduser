@@ -1,7 +1,7 @@
 default_stages: [commit]
 repos:
   - repo: "https://github.com/pre-commit/pre-commit-hooks"
-    rev: "v4.3.0"
+    rev: "v5.0.0"
     hooks:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
@@ -15,7 +15,7 @@ repos:
       - id: check-added-large-files
 
   - repo: "https://github.com/ansible-community/ansible-lint.git"
-    rev: "v6.10.0"
+    rev: "v24.12.2"
     hooks:
       - id: ansible-lint
         files: \.(ya?ml|j2)$
@@ -31,11 +31,11 @@ repos:
       - id: ansible_role_find_unquoted_values
       - id: ansible_role_find_horizontal_when
 
-  - repo: "local"
-    hooks:
-      - id: ansible-doctor
-        name: "Ansible Doctor"
-        entry: "ansible-doctor"
-        pass_filenames: false
-        language: "system"
-        exclude: "molecule/|.github/|.pre-commit-config.yaml"
+  # - repo: "local"
+  #   hooks:
+  #     - id: ansible-doctor
+  #       name: "Ansible Doctor"
+  #       entry: "ansible-doctor"
+  #       pass_filenames: false
+  #       language: "system"
+  #       exclude: "molecule/|.github/|.pre-commit-config.yaml"
