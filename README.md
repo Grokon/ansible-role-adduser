@@ -1,6 +1,6 @@
 # ansible-role-adduser
 
-[![Mocelule Test Status](https://github.com/Grokon/ansible-role-adduser/actions/workflows/molecule.yaml/badge.svg?branch=master)](https://github.com/Grokon/ansible-role-adduser/actions/workflows/molecule.yaml)
+[![Molecule Test Status](https://github.com/Grokon/ansible-role-adduser/actions/workflows/molecule.yaml/badge.svg?branch=master)](https://github.com/Grokon/ansible-role-adduser/actions/workflows/molecule.yaml)
 [![GitHub release](https://img.shields.io/github/release/Grokon/ansible-role-adduser.svg)](https://github.com/Grokon/ansible-role-adduser/releases)
 [![GitHub license](https://img.shields.io/github/license/Grokon/ansible-role-adduser.svg)](https://github.com/Grokon/ansible-role-adduser/blob/master/LICENSE)
 [![Ansible Galaxy](https://img.shields.io/badge/galaxy-grokon.adduser-blue.svg)](https://galaxy.ansible.com/grokon/adduser/)
@@ -26,10 +26,11 @@
         system: true
 ```
 
-An Ansible Role that added users and groups on Debian
+An Ansible Role that adds users and groups on Debian
 
 ## Table of content
 
+- [Requirements](#requirements)
 - [Default Variables](#default-variables)
   - [adduser__authorized_keys_file](#adduser__authorized_keys_file)
   - [adduser__create_homedir](#adduser__create_homedir)
@@ -51,6 +52,10 @@ An Ansible Role that added users and groups on Debian
 - [Author](#author)
 
 ---
+
+## Requirements
+
+- Minimum Ansible version: `2.19`
 
 ## Default Variables
 

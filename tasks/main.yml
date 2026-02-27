@@ -27,12 +27,12 @@
 
 - name: Create or modify groups
   ansible.builtin.import_tasks: groups.yml
-  when: adduser__groups | length
+  when: adduser__groups | length > 0
   tags: ["adduser", "groups"]
 
 - name: Create or modify users
   ansible.builtin.import_tasks: users.yml
-  when: adduser__users | length
+  when: adduser__users | length > 0
   tags: ["adduser", "users"]
 
 - name: Delete users

@@ -28,19 +28,19 @@ jobs:
       fail-fast: false
       matrix:
         distro:
-          - debian-bullseye
+          - debian-trixie
 
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: "grokon.adduser"
       - name: Set up Python 3.x
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.x"
       - name: Install dependencies
-        run: python3 -m pip install ansible molecule[docker] docker passlib
+        run: python3 -m pip install ansible molecule molecule-plugins[docker] docker passlib
       - name: Test with molecule
         run: |
           molecule test

@@ -27,7 +27,7 @@
       join(',') if 'groups' in item else '' }}"
     append: "{{ item.append | default(omit) }}"
     shell: "{{ item.shell | default(adduser__default_shell) }}"
-    password: "{{ item.password if item.password is defined else '!' }}"
+    password: "{{ item.password | default(omit) }}"
     comment: "{{ item.comment | default('User created by ansible') }}"
     uid: "{{ item.uid | default(omit) }}"
     home: "{{ item.home | default('/home/' + item.name) }}"
@@ -55,7 +55,7 @@
 - name: SSH keys
   ansible.posix.authorized_key:
     user: "{{ item.name }}"
-    exclusive: "{{ item.ssh_key_exclusive | default(true) }}"
+    exclusive: "{{ item.ssh_key_exclusive | default(false) }}"
     key: "{{ item.ssh_key | join ('\n') }}"
   when: item.ssh_key is defined
   with_items: "{{ adduser__users }}"

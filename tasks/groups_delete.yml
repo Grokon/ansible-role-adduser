@@ -13,7 +13,7 @@
 - name: Set facts with group list for delete
   ansible.builtin.set_fact:
     __group_list: "{{ __group_stats_files.files | map(attribute='path') | map('basename') | map('regex_replace', 'group_', '') | map('regex_replace', '.yaml', '') | list }}"
-  when: __group_stats_files.files | length
+  when: __group_stats_files.files | length > 0
 
 - name: Delete group
   become: true
@@ -21,7 +21,7 @@
     name: "{{ item }}"
     state: absent
   with_items: "{{ __group_list }}"
-  when: __group_stats_files.files | length
+  when: __group_stats_files.files | length > 0
 
 - name: Delete sudoers for group
   become: true
@@ -30,7 +30,7 @@
     state: absent
     group: "{{ item.group | default(omit) }}"
   with_items: "{{ __group_list }}"
-  when: __group_stats_files.files | length
+  when: __group_stats_files.files | length > 0
 
 - name: Delete group stats file
   become: false
@@ -38,4 +38,4 @@
     path: "{{ adduser__stats_file_path }}/group_{{ item }}.yaml"
     state: absent
   with_items: "{{ __group_list }}"
-  when: __group_stats_files.files | length
+  when: __group_stats_files.files | length > 0
