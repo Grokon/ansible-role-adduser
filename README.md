@@ -28,7 +28,7 @@
 
 An Ansible Role that adds users and groups on Debian
 
-## Table of content
+## Table of contents
 
 - [Requirements](#requirements)
 - [Default Variables](#default-variables)

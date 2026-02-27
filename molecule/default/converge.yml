@@ -20,5 +20,5 @@
             shell: "/bin/bash"
             uid: 3000
             home: "/home/foo"
-            system: true
+            is_system_user: true
             docker_enabled: true

@@ -15,7 +15,7 @@
         group: "test1"
         shell: "/bin/bash"
         uid: 2000
-        home: "/home/foo"
+        home: "/home/test"
         system: true
         state: present
       become: true

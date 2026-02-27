@@ -4,7 +4,7 @@
 # Check if Debian is used
 - name: FAIL; if not Debian
   ansible.builtin.assert:
-    that: ansible_os_family == "Debian"
+    that: ansible_facts["os_family"] == "Debian"
     fail_msg: "This role only tested on Debian based systems"
     quiet: true
   tags: ["adduser", "users", "groups"]
